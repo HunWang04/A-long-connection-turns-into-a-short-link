@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--mybatis-3-mapper.dtd:约束文件的名称，限制和检查在当前文件中出现的标签和属性符合mybatis的要求-->
+<!--namespace：命名空间，要有唯一的值，要求使用dao接口的权限定名称（一个dao接口对应一个mapper，namespace指明对应哪个dao接口）-->
+<mapper namespace="org.example.change.DAO.LSDAO">
+    <select id="se" parameterType="User">
+        select * from user;
+    </select>
+<!--    save1-->
+    <insert id="save1" parameterType="LS">
+        insert into url_map (short_url,long_url,short_url_digest,long_url_digest,compression_code) values (#{Short},#{Long},#{Short},#{Long},#{uu});
+    </insert>
+    <insert id="save2" parameterType="LS">
+        insert ignore into domain_conf (domain_value) values (#{domain});
+    </insert>
+    <insert id="save3" parameterType="LS">
+        insert into compression_code (compression_code) values (#{uu});
+    </insert>
+<!--    save4.1 有效跳转-->
+    <insert id="save41" parameterType="Msg">
+        insert into visit_statistics (statistics_date,effective_redirection_count,compression_code) values (#{Date},#{effective},#{code})
+            ON DUPLICATE KEY UPDATE statistics_date=#{Date},effective_redirection_count=(effective_redirection_count+1) ;
+    </insert>
+<!--    save4.2 无 效跳转-->
+    <insert id="save42" parameterType="Msg">
+        insert into visit_statistics (statistics_date,ineffective_redirection_count,compression_code) values (#{Date},#{ineffective},#{code})
+            ON DUPLICATE KEY UPDATE statistics_date=#{Date},ineffective_redirection_count=(ineffective_redirection_count+1) ;
+    </insert>
+<!--    save 5-->
+    <insert id="save5" parameterType="Msg">
+        insert ignore into transform_event_record (client_ip,short_url,long_url,compression_code,record_time,user_agent,browser,os_type,transform_status)
+        values (#{client},#{Short},#{Long},#{code},#{Date},#{UA},#{browser},#{os},#{status})
+    </insert>
+</mapper>
